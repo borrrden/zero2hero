@@ -19,13 +19,16 @@ int add_employee(struct dbheader_t *dbhdr, struct employee_t **employeesUgh, cha
     char *addr = strtok(NULL, ",");
     char *hours = strtok(NULL, ",");
 
-    struct employee_t* employees = *employeesUgh;
+    dbhdr->count++;
+
+    struct employee_t* employees = realloc(*employeesUgh, dbhdr->count);
 
     strncpy(employees[dbhdr->count - 1].name, name, sizeof(employees[dbhdr->count].name));
     strncpy(employees[dbhdr->count - 1].address, addr, sizeof(employees[dbhdr->count].address));
     employees[dbhdr->count - 1].hours = atoi(hours);
 
     dbhdr->filesize += sizeof(struct employee_t);
+    *employeesUgh = employees;
 
     return STATUS_SUCCESS;
 }
