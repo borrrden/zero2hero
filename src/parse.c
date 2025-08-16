@@ -30,6 +30,8 @@ int add_employee(struct dbheader_t *dbhdr, struct employee_t **employeesUgh, cha
     dbhdr->filesize += sizeof(struct employee_t);
     *employeesUgh = employees;
 
+    printf("HI\n");
+
     return STATUS_SUCCESS;
 }
 
