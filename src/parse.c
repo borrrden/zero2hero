@@ -14,19 +14,54 @@
 
 // }
 
-// int add_employee(struct dbheader_t *dbhdr, struct employee_t *employees, char *addstring) {
+int add_employee(struct dbheader_t *dbhdr, struct employee_t *employees, char *addstring) {
+    char *name = strtok(addstring, ",");
+    char *addr = strtok(NULL, ",");
+    char *hours = strtok(NULL, ",");
 
-// }
+    strncpy(employees[dbhdr->count - 1].name, name, sizeof(employees[dbhdr->count].name));
+    strncpy(employees[dbhdr->count - 1].address, addr, sizeof(employees[dbhdr->count].address));
+    employees[dbhdr->count - 1].hours = atoi(hours);
 
-// int read_employees(int fd, struct dbheader_t *dbhdr, struct employee_t **employeesOut) {
+    dbhdr->filesize += sizeof(struct employee_t);
 
-// }
+    return STATUS_SUCCESS;
+}
+
+int read_employees(int fd, struct dbheader_t *dbhdr, struct employee_t **employeesOut) {
+    if(fd < 0) {
+        printf("Got a bad FD from the user\n");
+        return STATUS_ERROR;
+    }
+
+    int count = dbhdr->count;
+    struct employee_t *employees = calloc(count, sizeof(struct employee_t));
+    if(!employees) {
+        printf("Malloc failed to employee array\n");
+        return STATUS_ERROR;
+    }
+
+    read(fd, employees, count * sizeof(struct employee_t));
+    for(int i = 0; i < count; i++) {
+        employees[i].hours = ntohl(employees[i].hours);
+    }
+
+    *employeesOut = employees;
+    return STATUS_SUCCESS;
+}
 
 int output_file(int fd, struct dbheader_t *dbhdr, struct employee_t *employees) {
     if(fd < 0) {
         printf("Got a bad FD from the user\n");
         return STATUS_ERROR;
     }
+
+    if(!dbhdr) {
+        printf("Invalid argument: dbhdr NULL");
+        return STATUS_ERROR;
+    }
+
+    int employee_count = dbhdr->count;
 
     dbhdr->magic = htonl(dbhdr->magic);
     dbhdr->filesize = htonl(dbhdr->filesize);
@@ -35,6 +70,17 @@ int output_file(int fd, struct dbheader_t *dbhdr, struct employee_t *employees) 
 
     lseek(fd, 0, SEEK_SET);
     write(fd, dbhdr, sizeof(struct dbheader_t));
+
+    if(!employees || employee_count == 0) {
+        return STATUS_SUCCESS;
+    }
+
+    for(int i = 0; i < employee_count; i++) {
+        employees[i].hours = htonl(employees[i].hours);
+    }
+
+    write(fd, employees, sizeof(struct employee_t) * employee_count);
+
     return STATUS_SUCCESS;
 }	
 
@@ -89,7 +135,7 @@ int create_db_header(struct dbheader_t **headerOut) {
         printf("Invalid NULL parameter headerOut");
         return STATUS_ERROR;
     }
-    
+
     struct dbheader_t* header = calloc(1, sizeof(struct dbheader_t));
     if(!header) {
         printf("Malloc failed to create db header\n");
