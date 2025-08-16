@@ -14,18 +14,16 @@
 
 // }
 
-int add_employee(struct dbheader_t *dbhdr, struct employee_t **employeesUgh, char *addstring) {
-    printf("Adding an employee\n");
-    
+int add_employee(struct dbheader_t *dbhdr, struct employee_t **employeesUgh, char *addstring) {   
     char *name = strtok(addstring, ",");
     char *addr = strtok(NULL, ",");
     char *hours = strtok(NULL, ",");
 
     dbhdr->count++;
 
+    printf("Currently %p\n", *employeesUgh);
     struct employee_t* employees = realloc(*employeesUgh, dbhdr->count);
-
-    printf("Realloc employees\n");
+    printf("Now %p / %p\n", employees, *employeesUgh);
 
     strncpy(employees[dbhdr->count - 1].name, name, sizeof(employees[dbhdr->count].name));
     strncpy(employees[dbhdr->count - 1].address, addr, sizeof(employees[dbhdr->count].address));
@@ -33,8 +31,7 @@ int add_employee(struct dbheader_t *dbhdr, struct employee_t **employeesUgh, cha
 
     dbhdr->filesize += sizeof(struct employee_t);
     *employeesUgh = employees;
-
-    printf("HI\n");
+    printf("Now %p / %p\n", employees, *employeesUgh);
 
     return STATUS_SUCCESS;
 }
