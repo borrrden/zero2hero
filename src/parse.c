@@ -15,6 +15,8 @@
 // }
 
 int add_employee(struct dbheader_t *dbhdr, struct employee_t **employeesUgh, char *addstring) {
+    printf("Adding an employee\n");
+    
     char *name = strtok(addstring, ",");
     char *addr = strtok(NULL, ",");
     char *hours = strtok(NULL, ",");
@@ -22,6 +24,8 @@ int add_employee(struct dbheader_t *dbhdr, struct employee_t **employeesUgh, cha
     dbhdr->count++;
 
     struct employee_t* employees = realloc(*employeesUgh, dbhdr->count);
+
+    printf("Realloc employees\n");
 
     strncpy(employees[dbhdr->count - 1].name, name, sizeof(employees[dbhdr->count].name));
     strncpy(employees[dbhdr->count - 1].address, addr, sizeof(employees[dbhdr->count].address));
