@@ -15,6 +15,11 @@
 // }
 
 int add_employee(struct dbheader_t *dbhdr, struct employee_t **employeesUgh, char *addstring) {   
+    if(!employeesUgh || !dbhdr) {
+        printf("Invaild argument, dbhdr or employees NULL");
+        return STATUS_ERROR;
+    }
+    
     char *name = strtok(addstring, ",");
     char *addr = strtok(NULL, ",");
     char *hours = strtok(NULL, ",");
