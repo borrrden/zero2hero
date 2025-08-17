@@ -37,7 +37,7 @@ int add_employee(struct dbheader_t *dbhdr, struct employee_t **employeesUgh, cha
     employees[dbhdr->count - 1].hours = atoi(hours);
 
     dbhdr->filesize += sizeof(struct employee_t);
-    *employeesUgh = employees;
+    //*employeesUgh = employees;
     printf("Now %p / %p\n", employees, *employeesUgh);
 
     return STATUS_SUCCESS;
