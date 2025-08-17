@@ -19,6 +19,8 @@ int add_employee(struct dbheader_t *dbhdr, struct employee_t **employeesUgh, cha
         printf("Invaild argument, dbhdr or employees NULL");
         return STATUS_ERROR;
     }
+
+    printf("Received %s to add to %p\n", addstring, employeesUgh);
     
     char *name = strtok(addstring, ",");
     char *addr = strtok(NULL, ",");
@@ -26,16 +28,17 @@ int add_employee(struct dbheader_t *dbhdr, struct employee_t **employeesUgh, cha
 
     dbhdr->count++;
 
-    //struct employee_t* employees = realloc(*employeesUgh, dbhdr->count);
-    // printf("Now %p / %p\n", employees, *employeesUgh);
+    printf("Currently %p\n", *employeesUgh);
+    struct employee_t* employees = calloc(*employeesUgh, dbhdr->count);
+    printf("Now %p / %p\n", employees, *employeesUgh);
 
-    // strncpy(employees[dbhdr->count - 1].name, name, sizeof(employees[dbhdr->count].name));
-    // strncpy(employees[dbhdr->count - 1].address, addr, sizeof(employees[dbhdr->count].address));
-    // employees[dbhdr->count - 1].hours = atoi(hours);
+    strncpy(employees[dbhdr->count - 1].name, name, sizeof(employees[dbhdr->count].name));
+    strncpy(employees[dbhdr->count - 1].address, addr, sizeof(employees[dbhdr->count].address));
+    employees[dbhdr->count - 1].hours = atoi(hours);
 
     dbhdr->filesize += sizeof(struct employee_t);
-    //*employeesUgh = employees;
-    //printf("Now %p / %p\n", employees, *employeesUgh);
+    *employeesUgh = employees;
+    printf("Now %p / %p\n", employees, *employeesUgh);
 
     return STATUS_SUCCESS;
 }
