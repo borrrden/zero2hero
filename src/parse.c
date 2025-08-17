@@ -21,8 +21,22 @@ int add_employee(struct dbheader_t *dbhdr, struct employee_t **employeesUgh, cha
     }
     
     char *name = strtok(addstring, ",");
+    if(!name) {
+        printf("Invalid addstring, no name");
+        return STATUS_ERROR;
+    }
+
     char *addr = strtok(NULL, ",");
+    if(!addr) {
+        printf("Invalid addstring, no addr");
+        return STATUS_ERROR;
+    }
+
     char *hours = strtok(NULL, ",");
+    if(!hours) {
+        printf("Invalid addstring, no hours");
+        return STATUS_ERROR;
+    }
 
     dbhdr->count++;
 
